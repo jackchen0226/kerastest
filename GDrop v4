@@ -36,7 +36,7 @@ print(X_test.shape[0], 'test samples')
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
-# Contains 1, 2 sigma Gaussian Dropout layer after Dense
+# Contains 1, 1.5 sigma Gaussian Dropout layer after Dense
 model = Sequential()
 model.add(Dense(512, input_shape=(784,)))
 model.add(GaussianDropout(1.5))
