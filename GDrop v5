@@ -39,7 +39,7 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 # Contains 1, 3 sigma Gaussian Dropout layer after Dense
 model = Sequential()
 model.add(Dense(512, input_shape=(784,)))
-model.add(GaussianDropout(3.0))
+model.add(GaussianDropout(2.0))
 model.add(Activation('relu'))
 model.add(Dropout(0.2))
 model.add(Dense(512))
