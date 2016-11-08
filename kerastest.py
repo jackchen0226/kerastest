@@ -38,7 +38,6 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 model = Sequential()
 model.add(Dense(512, input_shape=(784,)))
-#model.add(GaussianDropout(1.0))
 model.add(Activation('relu'))
 model.add(Dropout(0.2))
 model.add(Dense(512))
