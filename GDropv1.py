@@ -12,7 +12,7 @@ np.random.seed(1337)  # for reproducibility
 from keras.datasets import mnist
 from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation
-from keras.layers.noise import GaussianNoise, GaussianDropout
+from keras.layers.noise import GaussianNoise
 from keras.optimizers import SGD, Adam, RMSprop
 from keras.utils import np_utils
 
@@ -36,10 +36,10 @@ print(X_test.shape[0], 'test samples')
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
-# Contains 1, 1.5 sigma Gaussian Noise layer after Dense
+# Contains 1, 1 sigma Gaussian Noise layer after Dense
 model = Sequential()
 model.add(Dense(512, input_shape=(784,)))
-model.add(GaussianNoise(1.5))
+model.add(GaussianNoise(1.0))
 model.add(Activation('relu'))
 model.add(Dropout(0.2))
 model.add(Dense(512))

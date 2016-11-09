@@ -36,10 +36,12 @@ print(X_test.shape[0], 'test samples')
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
-# Contains 1, 1.5 sigma Gaussian Noise layer after Dense
 model = Sequential()
 model.add(Dense(512, input_shape=(784,)))
-model.add(GaussianNoise(1.5))
+model.add(GaussianNoise(1.0))
+model.add(GaussianNoise(1.0))
+model.add(GaussianNoise(1.0))
+model.add(GaussianNoise(1.0))
 model.add(Activation('relu'))
 model.add(Dropout(0.2))
 model.add(Dense(512))
@@ -61,3 +63,5 @@ score = model.evaluate(X_test, Y_test, verbose=0)
 
 print('Test score:', score[0])
 print('Test accuracy:', score[1])
+
+
