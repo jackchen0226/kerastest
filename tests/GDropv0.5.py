@@ -7,9 +7,7 @@ Gets to 98.40% test accuracy after 20 epochs
 
 from __future__ import print_function
 import numpy as np
-from scipy.misc import imsave()
-
-np.random.seed(720)  # for reproducibility
+np.random.seed(1337)  # for reproducibility
 
 from keras.datasets import mnist
 from keras.models import Sequential
@@ -40,10 +38,7 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 model = Sequential()
 model.add(Dense(512, input_shape=(784,)))
-model.add(GaussianNoise(1.0))
-model.add(GaussianNoise(1.0))
-model.add(GaussianNoise(1.0))
-model.add(GaussianNoise(1.0))
+model.add(GaussianNoise(0.5))
 model.add(Activation('relu'))
 model.add(Dropout(0.2))
 model.add(Dense(512))

@@ -7,11 +7,12 @@ Gets to 98.40% test accuracy after 20 epochs
 
 from __future__ import print_function
 import numpy as np
+from scipy.misc.pilutil import imsave
 np.random.seed(1337)  # for reproducibility
 
 from keras.datasets import mnist
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Activation
+from keras.layers.core import Dense, Dropout, Activation, Flatten, Reshape
 from keras.layers.noise import GaussianNoise, GaussianDropout
 from keras.optimizers import SGD, Adam, RMSprop
 from keras.utils import np_utils
@@ -38,6 +39,7 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 model = Sequential()
 model.add(Dense(512, input_shape=(784,)))
+imsave("test.png", model.output_shape)
 model.add(Activation('relu'))
 model.add(Dropout(0.2))
 model.add(Dense(512))
