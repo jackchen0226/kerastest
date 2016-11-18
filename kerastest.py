@@ -50,11 +50,15 @@ model.add(Dropout(0.2))
 model.add(Dense(10))
 model.add(Activation('softmax'))
 
-imgTensor = K.zeros((28, 28), dtype="float32", name=None)
+'''imgTensor = K.zeros((28, 28), dtype="float32", name=None)
 #imgTensor = K.reshape(model.inputs[0], (28,28))
 
-imgChara = K.eval(imgTensor)
-print(imgChara)
+imgChara = K.eval(imgTensor)'''
+
+get_2nd_layer_output = K.function([model.layers[0].input],
+                                  [model.layers[2].output])
+layer_output = get_2nd_layer_output([X_train])[0]
+
 
 model.summary()
 
