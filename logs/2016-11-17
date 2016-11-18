@@ -1,0 +1,7 @@
+In order to clamp data, create own layer. Do not need weights; this si a static model.
+Cannot convert tensor to array. Use K.function() to view output.
+	Remember that [X] means X_train or X_test.
+Project? Kaggle has competitions.
+	Could even do a personal thing with it i.e. leaf recogniton for own data collection, that whole comparing similar test tones of social media (see 2016-11-10).
+Compare images before and after clamp (once figured out)
+Install Keras on home machine (whoops)
