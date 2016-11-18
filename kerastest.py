@@ -8,7 +8,7 @@ Gets to 98.40% test accuracy after 20 epochs
 from __future__ import print_function
 import numpy as np
 from scipy.misc.pilutil import imsave
-np.random.seed(1337)  # for reproducibility
+np.random.seed(9180)  # for reproducibility
 
 from keras.datasets import mnist
 from keras.models import Sequential
@@ -16,10 +16,11 @@ from keras.layers.core import Dense, Dropout, Activation, Flatten, Reshape
 from keras.layers.noise import GaussianNoise, GaussianDropout
 from keras.optimizers import SGD, Adam, RMSprop
 from keras.utils import np_utils
+from keras import backend as K
 
 batch_size = 128
 nb_classes = 10
-nb_epoch = 20
+nb_epoch = 1
 
 # the data, shuffled and split between train and test sets
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
@@ -39,7 +40,8 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 model = Sequential()
 model.add(Dense(512, input_shape=(784,)))
-imsave("test.png", model.output_shape)
+#model.add(GaussianNoise(1.0))
+print(model.output_shape)
 model.add(Activation('relu'))
 model.add(Dropout(0.2))
 model.add(Dense(512))
@@ -47,6 +49,12 @@ model.add(Activation('relu'))
 model.add(Dropout(0.2))
 model.add(Dense(10))
 model.add(Activation('softmax'))
+
+imgTensor = K.zeros((28, 28), dtype="float32", name=None)
+#imgTensor = K.reshape(model.inputs[0], (28,28))
+
+imgChara = K.eval(imgTensor)
+print(imgChara)
 
 model.summary()
 

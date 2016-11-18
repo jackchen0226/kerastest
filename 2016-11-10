@@ -1,8 +1,0 @@
-Place range on data before applying gaussian noise
-	(so that data after noise does not become a negative pixel value)
-Create images using scipy imsave() after the first Dense layer to observe what happens
-	Might need a bit of funny business in order to make an image
-Science fair, check with Ms. Samson
-Change seed for reproducibilty for future tests
-
-
