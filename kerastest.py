@@ -38,10 +38,31 @@ print(X_test.shape[0], 'test samples')
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
+from keras.engine.topology import Layer
+
+class MyLayer(Layer):
+    def __init__(self, output_dim, **kwargs):
+        self.output_dim = output_dim
+        super(MyLayer, self).__init__(**kwargs)
+
+    def build(self, input_shape):
+        input_dim = input_shape[1]
+        initial_weight_value = np.ones((input_dim, self.output_dim))
+        self.W = K.variable(initial_weight_value, name="test")
+        self.trainable_weights = [self.W]
+        super(MyLayer, self).build(input_shape)
+
+    def call(self, x, input_shape, mask=None):
+        return K.any(x, self.W, keepdims=True)
+
+    def get_output_shape_for(self, input_shape):
+        return (input_shape[0], output_dim)
+
+
 model = Sequential()
 model.add(Dense(512, input_shape=(784,)))
 #model.add(GaussianNoise(1.0))
-print(model.output_shape)
+model.add(MyLayer(output_dim=512, input_shape(784,)))
 model.add(Activation('relu'))
 model.add(Dropout(0.2))
 model.add(Dense(512))
@@ -50,15 +71,9 @@ model.add(Dropout(0.2))
 model.add(Dense(10))
 model.add(Activation('softmax'))
 
-'''imgTensor = K.zeros((28, 28), dtype="float32", name=None)
-#imgTensor = K.reshape(model.inputs[0], (28,28))
-
-imgChara = K.eval(imgTensor)'''
-
-get_2nd_layer_output = K.function([model.layers[0].input],
-                                  [model.layers[2].output])
-layer_output = get_2nd_layer_output([X_train])[0]
-
+'''get_3rd_layer_output = K.function([model.layers[0].input],
+                                  [model.layers[3].output])
+layer_output = get_3rd_layer_output([X_test])[0]'''
 
 model.summary()
 
