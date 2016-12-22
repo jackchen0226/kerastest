@@ -1,0 +1,7 @@
+Took a look at the Gaussian value clamp. Here's what happened.
+	By looking at the source code of GaussianNoise, using ipython's function?? feature, the randomness code could be found to generate the noise. It used K.random_normal() which uses tensorflow's tf.random_normal which outputs a tensor (as expected).
+	Tensors could not, from my research, have single values edited so a method to do so is the convert to ndarray and convert down to list and set values above/below a certain value and set themm to 1 or 0 using a for loop.
+		This also assumes the values of the initial tensor are between 1,0. Need to check those values.
+	This would be slow, need to check if there's a faster method.
+
+As for the image, the same method could probably also be used. Still need to get Theano running or finally get around a linux VM since windows doesn't have a compiler for source code.
