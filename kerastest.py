@@ -11,8 +11,8 @@ from scipy.misc.pilutil import imsave
 np.random.seed(9180)  # for reproducibility
 
 from keras.datasets import mnist
-from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Activation, Flatten, Reshape
+from keras.models import Sequential, Model
+from keras.layers.core import Dense, Dropout, Activation, Flatten, Reshape, Lambda
 from keras.layers.noise import GaussianNoise, GaussianDropout
 from keras.optimizers import SGD, Adam, RMSprop
 from keras.utils import np_utils
@@ -39,7 +39,7 @@ Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 from keras.engine.topology import Layer
-
+'''
 class MyLayer(Layer):
     def __init__(self, output_dim, **kwargs):
         self.output_dim = output_dim
@@ -58,22 +58,49 @@ class MyLayer(Layer):
     def get_output_shape_for(self, input_shape):
         return (input_shape[0], output_dim)
 
+class NoiseLayer(Layer):
+    def __init__(self, sigma=1.0, **kwargs):
+        self.supports_masking = True
+        self.sigma = sigma
+        self.uses_learning_phase = True
+        super(GaussianNoise, self).__init__(**kwargs)
+
+    def call(self, x, mask=None):
+        
+        noise_x = x + K.random_normal(shape=K.shape(x),
+                                      mean=0.,
+                                      std=self.sigma)
+        return K.in_train_phase(noise_x, x)
+
+    def get_config(self):
+        config = {'sigma': self.sigma}
+        base_config = super(GaussianNoise, self).get_config()
+        return dict(list(base_config.items()) + list(config.items()))
+'''
+def antirectifier(x):
+    x -= K.mean(x, axis=1, keepdims=True)
+    x = K.l2_normalize(x, axis=1)
+    pos = K.relu(x)
+    neg = K.relu(-x)
+    return K.concatenate([pos, neg], axis=1)
+
+def antirectifier_output_shape(input_shape):
+    shape = list(input_shape)
+    assert len(shape) == 2  # only valid for 2D tensors
+    shape[-1] *= 2
+    return tuple(shape)
 
 model = Sequential()
 model.add(Dense(512, input_shape=(784,)))
-#model.add(GaussianNoise(1.0))
-model.add(MyLayer(output_dim=512, input_shape(784,)))
+model.add(GaussianNoise(1.0))
+#model.add(Lambda(antirectifier, output_shape=antirectifier_output_shape))
 model.add(Activation('relu'))
 model.add(Dropout(0.2))
-model.add(Dense(512))
+model.add(Dense(512, name="2nd_dense"))
 model.add(Activation('relu'))
 model.add(Dropout(0.2))
 model.add(Dense(10))
 model.add(Activation('softmax'))
-
-'''get_3rd_layer_output = K.function([model.layers[0].input],
-                                  [model.layers[3].output])
-layer_output = get_3rd_layer_output([X_test])[0]'''
 
 model.summary()
 
@@ -89,3 +116,9 @@ score = model.evaluate(X_test, Y_test, verbose=0)
 print('Test score:', score[0])
 print('Test accuracy:', score[1])
 
+output_layer_name = "activation_3"
+layer_name = 'my_layer'
+intermediate_layer_model = Model(input=model.input, output=model.get_layer(output_layer_name).output)
+intermediate_output = intermediate_layer_model.predict(X_train)
+
+imsave('outfile {0}.jpg'.format(output_layer_name), intermediate_output)

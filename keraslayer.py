@@ -7,7 +7,7 @@ class MyLayer(Layer):
         self.self.output_dim = output_dim
         super(MyLayer, self).__init__(**kwargs)
 
-    def build(self, input_shape):
+e):
         input_dim = input_shape[1]
         initial_weight_value = np.ones((input_dim, output_dim))
         self.W = K.variable(initial_weight_value, name="test")
