@@ -1,0 +1,3 @@
+Images are available but very basic. Need's reshaping to view digits but the tensor can be viewed.
+Clamp is difficult to create mostly because of Keras unable to convert a numpy array into a tensor. May need to incorporate tensorflow into it? Also not sure if completely necesary do to the image outputs (not much difference from dense to noise)
+Also need to switch to something else pretty soon. REsearch more datasets on Kaggle.
