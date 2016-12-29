@@ -1,0 +1,3 @@
+Added clamp to noise function. Since tensors are essentially just math and not concrete numbers, all what was needed for K.clip() to have max and min values set. Much simplier than expected
+
+Since image saving is only predicting the output of a layer based on input, it may have some trouble when dealing with more complex layers. Still, it works.
