@@ -61,7 +61,7 @@ class MyLayer(Layer):
     def get_output_shape_for(self, input_shape):
         return (input_shape[0], output_dim)
 '''
-import tensorflow as tf
+
 class NoiseLayer(Layer):
     def __init__(self, sigma=1.0, **kwargs):
         self.supports_masking = True
@@ -86,7 +86,8 @@ class NoiseLayer(Layer):
                     noise_x[i][j] = 0
 
         noise_x.asarray(noise_x)
-        noise_x = tf.constant(noise_x, shape=(512,60000))
+        y = K.placeholder(shape=(512,60000))
+        noise_x = 
         return K.in_train_phase(noise_x, x)
 
     def get_config(self):
