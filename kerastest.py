@@ -70,24 +70,28 @@ class NoiseLayer(Layer):
         super(NoiseLayer, self).__init__(**kwargs)
 
     def call(self, x, mask=None):
+	# noise is a random normal distribution curve
         noise = K.random_normal(shape=K.shape(x),
                                       mean=0.,
                                       std=self.sigma)
+	# noise_x is the noise tensor combined with the input tensor
         noise_x = x + noise        
+	# Then, noise_x is converted down to a list (tensor > numpy array > list)
         noise_x = K.eval(noise_x)
         print(noise_x)
         noise_x = noise_x.tolist()
         print(noise_x)
+	# Limit final values, a greyscale pixel can't be lighter than 1.0 (white) or darker than 0.0 (black)
         for i in range(len(noise_x)):
             for j in range(len(noise_x[i])):
-                if j > 1:
-                    noise_x[i][j] = 1
-                elif j < 0:
-                    noise_x[i][j] = 0
+                if j > 1.0:
+                    noise_x[i][j] = 1.0
+                elif j < 0.0:
+                    noise_x[i][j] = 0.0
 
         noise_x.asarray(noise_x)
         y = K.placeholder(shape=(512,60000))
-        noise_x = 
+        # Make sure noise_x becomes a tensor here
         return K.in_train_phase(noise_x, x)
 
     def get_config(self):
@@ -96,8 +100,10 @@ class NoiseLayer(Layer):
         return dict(list(base_config.items()) + list(config.items()))
 
 model = Sequential()
-model.add(Dense(512, input_shape=(784,)))   
-model.add(NoiseLayer(1.0))
+model.add(GaussianNoise(3.0, input_shape=(784,)))
+#model.add(Dense(512, input_shape=(784,)))
+model.add(Dense(512))
+#model.add(NoiseLayer(1.0))
 model.add(Activation('relu'))
 model.add(Dropout(0.2))
 model.add(Dense(512, name="2nd_dense"))
@@ -121,9 +127,8 @@ print('Test score:', score[0])
 print('Test accuracy:', score[1])
 
 from datetime import datetime
-output_layer_name = "activation_1"
+output_layer_name = "gaussiannoise_1"
 intermediate_layer_model = Model(input=model.input, output=model.get_layer(output_layer_name).output)
 intermediate_output = intermediate_layer_model.predict(X_train)
-
-
+print(intermediate_output)
 imsave('output_images/outfile {} {:%B %d,%H:%M:%S}.png'.format(output_layer_name, datetime.now()), intermediate_output)
