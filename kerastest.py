@@ -21,7 +21,7 @@ from keras import backend as K
 
 batch_size = 128
 nb_classes = 10
-nb_epoch = 20
+nb_epoch = 1
 
 # the data, shuffled and split between train and test sets
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
@@ -35,6 +35,7 @@ X_train /= 255
 X_test /= 255
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
+print(X_train.shape[1])
 
 # convert class vectors to binary class matrices
 Y_train = np_utils.to_categorical(y_train, nb_classes)
@@ -107,8 +108,17 @@ print('Test score:', score[0])
 print('Test accuracy:', score[1])
 
 from datetime import datetime
+from time import sleep
+from os import mkdir
 output_layer_name = "noiselayer_1"
 intermediate_layer_model = Model(input=model.input, output=model.get_layer(output_layer_name).output)
 intermediate_output = intermediate_layer_model.predict(X_train)
 
-imsave('output_images/outfile {} {:%B %d,%H:%M:%S}.png'.format(output_layer_name, datetime.now()), intermediate_output)
+try:
+    mkdir("output_images/{:%B %d} images".format(datetime.now()))
+except OSError:
+    pass
+
+for i in range(10):
+    imsave('output_images/{:%B %d} images/{} {:%B %d,%H-%M-%S}.png'.format(datetime.now(), output_layer_name, datetime.now()), intermediate_output[i].reshape(28, 28))
+    sleep(1)
