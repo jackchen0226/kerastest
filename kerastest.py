@@ -75,7 +75,7 @@ class NoiseLayer(Layer):
                                       mean=0.,
                                       std=self.sigma)
         noise_x = K.clip(noise + x, 0.0, 1.0)
-        return K.in_train_phase(noise_x, x)
+        return K.in_train_phase(noise_x, noise_x)
 
     def get_config(self):
         config = {'sigma': self.sigma}
@@ -99,13 +99,13 @@ model.compile(loss='categorical_crossentropy',
               optimizer=RMSprop(),
               metrics=['accuracy'])
 
-history = model.fit(X_train, Y_train,
-                    batch_size=batch_size, nb_epoch=nb_epoch,
-                    verbose=1, validation_data=(X_test, Y_test))
-score = model.evaluate(X_test, Y_test, verbose=0)
-
-print('Test score:', score[0])
-print('Test accuracy:', score[1])
+#history = model.fit(X_train, Y_train,
+#                    batch_size=batch_size, nb_epoch=nb_epoch,
+#                    verbose=1, validation_data=(X_test, Y_test))
+#score = model.evaluate(X_test, Y_test, verbose=0)
+#
+#print('Test score:', score[0])
+#print('Test accuracy:', score[1])
 
 from datetime import datetime
 from time import sleep
@@ -113,6 +113,8 @@ from os import mkdir
 output_layer_name = "noiselayer_1"
 intermediate_layer_model = Model(input=model.input, output=model.get_layer(output_layer_name).output)
 intermediate_output = intermediate_layer_model.predict(X_train)
+print(intermediate_output.shape)
+print(list(intermediate_output[0]))
 
 try:
     mkdir("output_images/{:%B %d} images".format(datetime.now()))
@@ -120,5 +122,5 @@ except OSError:
     pass
 
 for i in range(10):
-    imsave('output_images/{:%B %d} images/{} {:%B %d,%H-%M-%S}.png'.format(datetime.now(), output_layer_name, datetime.now()), intermediate_output[i].reshape(28, 28))
+    imsave('output_images/{:%B %d} images/{} {:%B %d,%H-%M-%S}.png'.format(datetime.now(), output_layer_name, datetime.now()), intermediate_output[i].reshape(28, 28) * 255.0)
     sleep(1)
